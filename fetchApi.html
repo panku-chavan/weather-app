@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Apli Using Openweather.org</title>
+</head>
+<style>
+    .mapouter {
+        position: relative;
+        text-align: right;
+        height: 500px;
+        width: 600px;
+    }
+    .gmap_canvas {
+        overflow: hidden;
+        background: none !important;
+        height: 500px;
+        width: 600px;
+    }
+    #flex{
+        display: flex;
+        margin: auto;
+    }
+    h1,h2{
+        text-align: center;
+    }
+   #info{
+    text-align: center;
+    padding-left: 20px;
+    padding-top: 25%;
+    padding-bottom: 25%;
+    margin: 10px;
+    width: 100%;
+    box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%) !important;
+    border-radius: 10px;
+
+   }
+   #map{
+    margin: 10px;
+    width: 50%;
+    padding-left: 20px;
+    
+   }
+   #result{
+    width: 50%;
+   }
+</style>
+
+
+<body>
+    <div class="container-fluid">
+      <h1>Weather App</h1>
+
+        <div>
+            <form action="">
+                <div class="mb-3"><input class="form-control" type="text" name="" id="city"></div>
+                <div class="mb-3" style="text-align:center"><button class="btn btn-outline-secondary "  onclick="getWeatherData()">search</button></div>
+
+            </form>
+        </div>
+       <div id="flex">
+        <div id="result">
+        </div>
+        <div class="mapouter" id="map">
+            <div class="gmap_canvas"><iframe width="600" height="500" id="gmap_canvas" frameborder="0" scrolling="no"
+                    marginheight="0" marginwidth="0"></iframe><a
+                    href="https://www.whatismyip-address.com/divi-discount/"></a><br>
+
+            </div>
+        </div>
+       </div>
+    </div>
+</body>
+
+</html>
+<script>
+    let key = '9c9f6c8a1735159813e9ff8bb9618099';
+    
+    let container = document.querySelector('#result');
+   
+    let iframe = document.querySelector('#gmap_canvas')
+    
+    async function getWeatherData() {
+
+        event.preventDefault();
+
+        
+        try {
+            let city = document.querySelector('#city').value;
+            let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&units=metric`;
+            let res = await fetch(url)
+            let data = await res.json();
+            // console.log(data);
+            showWeather(data);
+        }
+        catch (err) {
+            console.log("err :", err);
+        }
+    }
+
+    function showWeather(data) {
+
+        container.innerHTML = null;
+        console.log(data);
+        let name = document.createElement('h2');
+       
+        name.innerText = `${data.name}`;
+        let temp = document.createElement('p');
+        temp.textContent = `Temprature :${data.main.temp}°`;
+        let humidity = document.createElement('p');
+        humidity.textContent = `Humidity :${data.main.humidity}`;
+        let pressure = document.createElement('p');
+        pressure.textContent = `Pressure :${data.main.pressure}`;
+        iframe.src = `https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+        
+        let div=document.createElement('div');
+        div.setAttribute('id','info');
+        div.append(name, temp, humidity, pressure);
+        container.append(div);
+        
+    }
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
